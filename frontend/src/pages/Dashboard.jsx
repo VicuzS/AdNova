@@ -89,7 +89,7 @@ export default function Dashboard() {
       {/* Header */}
       <div className="dash-header">
         <div>
-          <h1 className="dash-title">Bienvenido, AdNova User</h1>
+          <h1 className="dash-title">Bienvenido, AdFlow User</h1>
           <p className="dash-sub">Aquí tienes el resumen de tu rendimiento publicitario de hoy.</p>
         </div>
       </div>

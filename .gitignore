@@ -1,5 +1,21 @@
+# Dependencias
 node_modules/
+
+# Build del frontend
 dist/
+
+# Variables de entorno (¡NUNCA subir al repo!)
 .env
 .env.local
+.env.production
+
+# Archivos temporales de uploads del backend
+backend/uploads/
+
+# Logs
 *.log
+npm-debug.log*
+
+# OS
+.DS_Store
+Thumbs.db

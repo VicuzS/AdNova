@@ -28,7 +28,7 @@ export default function Layout() {
             <Zap size={18} color="#fff" />
           </div>
           <div>
-            <div className="logo-name">AdNova.ai</div>
+            <div className="logo-name">AdFlow.ai</div>
             <div className="logo-sub">IA Automatización</div>
           </div>
         </div>
@@ -87,7 +87,7 @@ export default function Layout() {
             <div className="user-chip">
               <div className="user-avatar">AU</div>
               <div className="user-info">
-                <span className="user-name">AdNova User</span>
+                <span className="user-name">AdFlow User</span>
                 <span className="user-role">Miembro Premium</span>
               </div>
               <ChevronDown size={14} color="var(--gray-400)" />

@@ -142,7 +142,7 @@ export default function GeneradorAnuncios() {
                   <div className="ad-headline">¡Descubre {producto}!</div>
                   <div className="ad-desc">{descripcion || 'La mejor opción para ti. Calidad premium al mejor precio. ¡Compra ahora!'}</div>
                   <div className="ad-cta-row">
-                    <span className="ad-url">AdNova.ai/shop</span>
+                    <span className="ad-url">adflow.ai/shop</span>
                     <span className="ad-cta-btn">Comprar ahora</span>
                   </div>
                 </div>

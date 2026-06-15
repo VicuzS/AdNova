@@ -5,7 +5,7 @@ import './PageBase.css'
 const mensajesEjemplo = [
   { tipo: 'out', texto: '¡Hola! 👋 Gracias por tu interés en nuestros productos. ¿En qué puedo ayudarte?', hora: '10:30' },
   { tipo: 'in', texto: 'Hola, quiero información sobre el plan premium', hora: '10:31' },
-  { tipo: 'out', texto: 'Claro, el plan Premium incluye: ✅ 200 créditos de anuncios IA\n✅ Videos Pro ilimitados\n✅ Soporte prioritario\n\nPrecio: $49/mes. ¿Te interesa?', hora: '10:31' },
+  { tipo: 'out', texto: 'Claro, el plan Premium incluye:  200 créditos de anuncios IA\n Videos Pro ilimitados\n Soporte prioritario\n\nPrecio: $49/mes. ¿Te interesa?', hora: '10:31' },
   { tipo: 'in', texto: 'Sí, me interesa. ¿Cómo pago?', hora: '10:32' },
 ]
 
