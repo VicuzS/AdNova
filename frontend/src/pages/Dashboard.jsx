@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import {
   AreaChart, Area, XAxis, YAxis, CartesianGrid,
@@ -6,11 +6,23 @@ import {
 } from 'recharts'
 import {
   TrendingUp, TrendingDown, Video, ArrowRight,
-  MoreVertical, AlertTriangle, ExternalLink
+  MoreVertical, AlertTriangle, ExternalLink, DollarSign,
+  Package, Percent, ShieldAlert
 } from 'lucide-react'
 import './Dashboard.css'
 
-// ── Datos de ejemplo ──────────────────────────────────────
+function CustomTooltip({ active, payload, label }) {
+  if (active && payload && payload.length) {
+    return (
+      <div className="chart-tooltip">
+        <div className="tooltip-label">{label}</div>
+        <div className="tooltip-value">{payload[0].value.toLocaleString()} Conversiones</div>
+      </div>
+    )
+  }
+  return null
+}
+
 const dataSemana = [
   { dia: 'Lun', conversiones: 620 },
   { dia: 'Mar', conversiones: 780 },
@@ -32,71 +44,112 @@ const dataMes = [
   { dia: '30', conversiones: 1240 },
 ]
 
-const campañas = [
-  {
-    nombre: 'Summer Sale 2024',
-    canal: 'Facebook Ads',
-    canalColor: '#1877F2',
-    estado: 'Activo',
-    estadoColor: 'green',
-    gastado: '$1,240.00',
-    roi: '4.2x',
-    roiColor: 'green',
-  },
-  {
-    nombre: 'Lead Gen – B2B',
-    canal: 'LinkedIn',
-    canalColor: '#0A66C2',
-    estado: 'Pausado',
-    estadoColor: 'yellow',
-    gastado: '$450.00',
-    roi: '2.1x',
-    roiColor: 'gray',
-  },
-  {
-    nombre: 'Retargeting Q1',
-    canal: 'Google Ads',
-    canalColor: '#EA4335',
-    estado: 'Activo',
-    estadoColor: 'green',
-    gastado: '$870.00',
-    roi: '3.7x',
-    roiColor: 'green',
-  },
-]
-
-// ── Custom Tooltip ────────────────────────────────────────
-function CustomTooltip({ active, payload, label }) {
-  if (active && payload && payload.length) {
-    return (
-      <div className="chart-tooltip">
-        <div className="tooltip-label">{label}</div>
-        <div className="tooltip-value">{payload[0].value.toLocaleString()} Conversiones</div>
-      </div>
-    )
-  }
-  return null
+function IconoAlerta({ alerta }) {
+  if (alerta.includes('Stock Muerto')) return <Package size={16} />
+  if (alerta.includes('Margen')) return <Percent size={16} />
+  return <ShieldAlert size={16} />
 }
 
-// ── Componente principal ──────────────────────────────────
 export default function Dashboard() {
   const [periodo, setPeriodo] = useState('30')
+  const [metricas, setMetricas] = useState(null)
+  const [cargando, setCargando] = useState(true)
   const navigate = useNavigate()
   const data = periodo === '7' ? dataSemana : dataMes
 
+  useEffect(() => {
+    fetch('/api/dashboard/metrics')
+      .then(r => r.json())
+      .then(d => { setMetricas(d); setCargando(false) })
+      .catch(() => setCargando(false))
+  }, [])
+
   return (
     <div className="dashboard">
-      {/* Header */}
       <div className="dash-header">
         <div>
-          <h1 className="dash-title">Bienvenido, AdFlow User</h1>
-          <p className="dash-sub">Aquí tienes el resumen de tu rendimiento publicitario de hoy.</p>
+          <h1 className="dash-title">CFO de Bolsillo</h1>
+          <p className="dash-sub">Business Intelligence para tu PYME — Alertas y métricas en tiempo real.</p>
         </div>
       </div>
 
       <div className="dash-grid">
-        {/* Columna principal */}
         <div className="dash-main">
+          {/* ── Tarjetas de métricas económicas ── */}
+          {metricas && (
+            <div className="metricas-eco">
+              <div className="card metrica-card">
+                <div className="metrica-icono metrica-icono--verde">
+                  <DollarSign size={20} />
+                </div>
+                <div className="metrica-info">
+                  <span className="metrica-label">Ventas Totales</span>
+                  <span className="metrica-valor">${metricas.ventasTotales.toLocaleString()}</span>
+                </div>
+              </div>
+              <div className="card metrica-card">
+                <div className="metrica-icono metrica-icono--azul">
+                  <Percent size={20} />
+                </div>
+                <div className="metrica-info">
+                  <span className="metrica-label">Margen Promedio</span>
+                  <span className="metrica-valor">{metricas.margenPromedio}%</span>
+                </div>
+              </div>
+              <div className="card metrica-card">
+                <div className="metrica-icono metrica-icono--rojo">
+                  <Package size={20} />
+                </div>
+                <div className="metrica-info">
+                  <span className="metrica-label">Capital Inmovilizado</span>
+                  <span className="metrica-valor">${metricas.capitalInmovilizado.toLocaleString()}</span>
+                </div>
+              </div>
+              <div className="card metrica-card">
+                <div className="metrica-icono metrica-icono--ambar">
+                  <ShieldAlert size={20} />
+                </div>
+                <div className="metrica-info">
+                  <span className="metrica-label">Alertas Activas</span>
+                  <span className="metrica-valor">{metricas.aiInsights?.length || 0}</span>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {cargando && <p className="text-muted" style={{padding:'1rem'}}>Cargando métricas...</p>}
+
+          {/* ── AI Insights ── */}
+          {metricas?.aiInsights?.length > 0 && (
+            <div className="card">
+              <div className="card-header">
+                <div className="card-title">
+                  <ShieldAlert size={18} style={{ marginRight: 8, verticalAlign: 'middle' }} />
+                  AI Insights — Alertas Financieras
+                </div>
+              </div>
+              <div className="insights-lista">
+                {metricas.aiInsights.map((insight, i) => (
+                  <div key={i} className={`insight-item insight-item--${insight.alerta.includes('Stock') ? 'rojo' : 'ambar'}`}>
+                    <div className="insight-icono">
+                      <IconoAlerta alerta={insight.alerta} />
+                    </div>
+                    <div className="insight-cuerpo">
+                      <div className="insight-titulo">
+                        <strong>{insight.producto}</strong>
+                        <span className="insight-badge">{insight.alerta}</span>
+                      </div>
+                      <p className="insight-detalle">{insight.detalle}</p>
+                      <p className="insight-sugerencia">
+                        <strong>Sugerencia:</strong> {insight.sugerencia}
+                      </p>
+                      <span className="insight-estrategia">{insight.estrategia}</span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
 
           {/* Gráfica conversiones */}
           <div className="card">
@@ -142,101 +195,10 @@ export default function Dashboard() {
               </ResponsiveContainer>
             </div>
           </div>
-
-          {/* Banner Video Pro */}
-          <div className="card banner-card">
-            <div className="banner-content">
-              <div className="banner-tag">
-                <Video size={12} /> NUEVO: GENERADOR DE VIDEO PRO
-              </div>
-              <h2 className="banner-title">
-                Transforma tus productos en anuncios de video cinematográficos
-              </h2>
-              <p className="banner-desc">
-                Usa nuestra nueva tecnología de IA para crear anuncios de video de 15 segundos
-                optimizados para TikTok e Instagram Reels en segundos.
-              </p>
-              <div className="banner-actions">
-                <button
-                  className="btn btn-primary"
-                  onClick={() => navigate('/videos')}
-                >
-                  Crear mi primer video
-                </button>
-                <button
-                  className="btn btn-outline"
-                  onClick={() => navigate('/historial')}
-                >
-                  Ver Galería
-                </button>
-              </div>
-            </div>
-            <div className="banner-img">
-              <div className="banner-img-placeholder">
-                <Video size={48} color="rgba(255,255,255,0.3)" />
-                <span>Preview del Video</span>
-              </div>
-            </div>
-          </div>
-
-          {/* Historial de campañas */}
-          <div className="card">
-            <div className="card-header">
-              <div className="card-title">Historial Reciente</div>
-              <button
-                className="ver-todo-btn"
-                onClick={() => navigate('/historial')}
-              >
-                Ver todo <ArrowRight size={14} />
-              </button>
-            </div>
-            <table className="campaign-table">
-              <thead>
-                <tr>
-                  <th>Campaña</th>
-                  <th>Canal</th>
-                  <th>Estado</th>
-                  <th>Gastado</th>
-                  <th>ROI</th>
-                  <th>Acciones</th>
-                </tr>
-              </thead>
-              <tbody>
-                {campañas.map((c, i) => (
-                  <tr key={i}>
-                    <td className="camp-name">{c.nombre}</td>
-                    <td>
-                      <div className="canal-chip">
-                        <span
-                          className="canal-dot"
-                          style={{ background: c.canalColor }}
-                        />
-                        {c.canal}
-                      </div>
-                    </td>
-                    <td>
-                      <span className={`estado-badge estado-badge--${c.estadoColor}`}>
-                        {c.estado}
-                      </span>
-                    </td>
-                    <td className="gastado">{c.gastado}</td>
-                    <td className={`roi roi--${c.roiColor}`}>{c.roi}</td>
-                    <td>
-                      <button className="row-action-btn">
-                        <MoreVertical size={16} />
-                      </button>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
         </div>
 
-        {/* Columna lateral */}
+        {/* Sidebar */}
         <div className="dash-side">
-
-          {/* Créditos IA */}
           <div className="card side-card">
             <div className="side-card-icon side-card-icon--blue">
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -256,7 +218,6 @@ export default function Dashboard() {
             </div>
           </div>
 
-          {/* WhatsApp */}
           <div className="card side-card side-card--warn">
             <div className="side-card-icon side-card-icon--yellow">
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -276,7 +237,6 @@ export default function Dashboard() {
             </div>
           </div>
 
-          {/* Plan */}
           <div className="card side-card plan-card">
             <div className="plan-label">Plan Actual</div>
             <div className="plan-name-row">
@@ -296,7 +256,6 @@ export default function Dashboard() {
               Mejorar Plan
             </button>
           </div>
-
         </div>
       </div>
     </div>

@@ -1,0 +1,51 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Producto {
+  id                  Int       @id @default(autoincrement())
+  nombre              String
+  sku                 String    @unique
+  fotoOriginalUrl     String?
+  costoAdquisicion    Float
+  precioVenta         Float
+  stockActual         Int
+  fechaIngresoAlmacen DateTime  @default(now())
+  createdAt           DateTime  @default(now())
+  updatedAt           DateTime  @updatedAt
+
+  campanas           Campana[]
+  ventasHistorial    VentaHistorial[]
+}
+
+model Campana {
+  id                      Int       @id @default(autoincrement())
+  productoId              Int
+  tipoEstrategia          String
+  descuentoAplicado       Float?
+  imagenGeneradaUrl       String?
+  copyTexto               String?
+  codigoTrackingWhatsapp  String?   @unique
+  createdAt               DateTime  @default(now())
+
+  producto    Producto        @relation(fields: [productoId], references: [id])
+  ventas     VentaHistorial[]
+}
+
+model VentaHistorial {
+  id            Int       @id @default(autoincrement())
+  productoId    Int
+  campanaId     Int?
+  cantidad      Int
+  precioAplicado Float
+  fechaVenta    DateTime  @default(now())
+  origen        String?
+
+  producto Producto @relation(fields: [productoId], references: [id])
+  campana  Campana? @relation(fields: [campanaId], references: [id])
+}

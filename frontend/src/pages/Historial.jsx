@@ -1,40 +1,32 @@
-import React, { useState } from 'react'
-import { Image, Search, Filter } from 'lucide-react'
+import React, { useState, useEffect } from 'react'
+import { Image, Search, Filter, ShoppingCart, ExternalLink } from 'lucide-react'
+import { useNavigate } from 'react-router-dom'
 import './PageBase.css'
 
-const items = [
-  { nombre: 'Summer Sale 2024', tipo: 'Imagen', plataforma: 'Facebook', fecha: 'Hace 2 días' },
-  { nombre: 'Video Promo Relojes', tipo: 'Video', plataforma: 'TikTok', fecha: 'Hace 3 días' },
-  { nombre: 'Lead Gen B2B', tipo: 'Imagen', plataforma: 'LinkedIn', fecha: 'Hace 5 días' },
-  { nombre: 'Retargeting Q1', tipo: 'Imagen', plataforma: 'Google', fecha: 'Hace 6 días' },
-  { nombre: 'Promo Navidad', tipo: 'Video', plataforma: 'Instagram', fecha: 'Hace 1 sem.' },
-  { nombre: 'Flash Sale 50%', tipo: 'Imagen', plataforma: 'Facebook', fecha: 'Hace 1 sem.' },
-  { nombre: 'Nuevo Producto X', tipo: 'Imagen', plataforma: 'Instagram', fecha: 'Hace 2 sem.' },
-  { nombre: 'Campaña Email B2C', tipo: 'Imagen', plataforma: 'Google', fecha: 'Hace 2 sem.' },
-]
-
-const colores = [
-  'linear-gradient(135deg,#0F1F4B,#1A3A7A)',
-  'linear-gradient(135deg,#065F46,#059669)',
-  'linear-gradient(135deg,#7C3AED,#4F46E5)',
-  'linear-gradient(135deg,#B45309,#D97706)',
-  'linear-gradient(135deg,#1E293B,#334155)',
-  'linear-gradient(135deg,#BE123C,#E11D48)',
-  'linear-gradient(135deg,#0369A1,#0EA5E9)',
-  'linear-gradient(135deg,#166534,#16A34A)',
-]
-
 export default function Historial() {
+  const [ventas, setVentas] = useState([])
+  const [cargando, setCargando] = useState(true)
   const [busqueda, setBusqueda] = useState('')
-  const filtrados = items.filter(i =>
-    i.nombre.toLowerCase().includes(busqueda.toLowerCase())
+  const navigate = useNavigate()
+
+  useEffect(() => {
+    fetch('/api/sales/history')
+      .then(r => r.json())
+      .then(d => { setVentas(d); setCargando(false) })
+      .catch(() => setCargando(false))
+  }, [])
+
+  const filtradas = ventas.filter(v =>
+    v.producto?.nombre?.toLowerCase().includes(busqueda.toLowerCase()) ||
+    v.origen?.toLowerCase().includes(busqueda.toLowerCase()) ||
+    v.campana?.tipoEstrategia?.toLowerCase().includes(busqueda.toLowerCase())
   )
 
   return (
     <div className="page">
       <div className="page-header">
-        <h1 className="page-title">Historial y Galería</h1>
-        <p className="page-sub">Todos tus anuncios y videos generados en un solo lugar</p>
+        <h1 className="page-title">Historial de Ventas</h1>
+        <p className="page-sub">Todas las ventas registradas con origen, campaña y métricas financieras</p>
       </div>
 
       <div className="card">
@@ -44,37 +36,63 @@ export default function Historial() {
             <input
               className="form-input"
               style={{ paddingLeft: 32 }}
-              placeholder="Buscar anuncios..."
+              placeholder="Buscar ventas..."
               value={busqueda}
               onChange={e => setBusqueda(e.target.value)}
             />
           </div>
-          <button className="btn btn-outline"><Filter size={14} /> Filtrar</button>
+          <span style={{ fontSize: 12.5, color: 'var(--gray-500)' }}>
+            {filtradas.length} venta(s)
+          </span>
         </div>
 
-        <div className="hist-grid">
-          {filtrados.map((item, i) => (
-            <div key={i} className="hist-item">
-              <div className="hist-thumb" style={{ background: colores[i % colores.length] }}>
-                {item.tipo === 'Video'
-                  ? <span style={{ color: 'rgba(255,255,255,0.4)', fontSize: 11 }}>▶ Video</span>
-                  : <Image size={24} color="rgba(255,255,255,0.25)" />
-                }
-              </div>
-              <div className="hist-info">
-                <div className="hist-name">{item.nombre}</div>
-                <div className="hist-meta">{item.tipo} · {item.plataforma} · {item.fecha}</div>
-              </div>
-            </div>
-          ))}
-        </div>
-
-        {filtrados.length === 0 && (
+        {cargando ? (
           <div className="empty-state">
-            <Image size={40} color="var(--gray-200)" />
-            <h3>Sin resultados</h3>
-            <p>No encontramos anuncios que coincidan con tu búsqueda.</p>
+            <div className="loading-ring" />
+            <p style={{ color: 'var(--gray-500)' }}>Cargando historial...</p>
           </div>
+        ) : filtradas.length === 0 ? (
+          <div className="empty-state">
+            <ShoppingCart size={40} color="var(--gray-200)" />
+            <h3>Sin ventas registradas</h3>
+            <p>Las ventas aparecerán aquí cuando se registren desde WhatsApp o API.</p>
+          </div>
+        ) : (
+          <table className="campaign-table">
+            <thead>
+              <tr>
+                <th>Producto</th>
+                <th>Cantidad</th>
+                <th>Precio aplicado</th>
+                <th>Total</th>
+                <th>Fecha</th>
+                <th>Origen</th>
+                <th>Campaña</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody>
+              {filtradas.map(v => (
+                <tr key={v.id} style={{ cursor: 'pointer' }} onClick={() => navigate(`/producto/${v.productoId}`)}>
+                  <td className="camp-name">{v.producto?.nombre || `ID: ${v.productoId}`}</td>
+                  <td>{v.cantidad}</td>
+                  <td>${v.precioAplicado}</td>
+                  <td className="gastado">${(v.cantidad * v.precioAplicado).toFixed(2)}</td>
+                  <td style={{ fontSize: 11.5 }}>{new Date(v.fechaVenta).toLocaleDateString()}</td>
+                  <td>{v.origen || '—'}</td>
+                  <td>{v.campana?.tipoEstrategia || '—'}</td>
+                  <td>
+                    <button
+                      className="row-action-btn"
+                      onClick={(e) => { e.stopPropagation(); navigate(`/producto/${v.productoId}`) }}
+                    >
+                      <ExternalLink size={14} />
+                    </button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
         )}
       </div>
     </div>

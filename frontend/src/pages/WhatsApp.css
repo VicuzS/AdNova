@@ -1,0 +1,53 @@
+/* ── WhatsApp page extras for sales tracking ── */
+.wa-input-row { display: flex; gap: 10px; margin-top: 12px; }
+
+.wa-phone-mock {
+  background: #111;
+  border-radius: 24px;
+  padding: 24px 16px;
+  min-height: 350px;
+  max-height: 400px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.wa-phone-mock::-webkit-scrollbar { width: 4px; }
+.wa-phone-mock::-webkit-scrollbar-track { background: transparent; }
+.wa-phone-mock::-webkit-scrollbar-thumb { background: #333; border-radius: 4px; }
+
+.wa-msg {
+  max-width: 80%;
+  padding: 10px 14px;
+  border-radius: 16px;
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.wa-msg--out {
+  background: #075E54;
+  color: #fff;
+  border-bottom-right-radius: 4px;
+  align-self: flex-end;
+}
+
+.wa-msg--in {
+  background: #1F2C34;
+  color: #e0e0e0;
+  border-bottom-left-radius: 4px;
+  align-self: flex-start;
+}
+
+.wa-time {
+  font-size: 10px;
+  opacity: 0.5;
+  margin-top: 3px;
+  text-align: right;
+}
+
+.wa-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}

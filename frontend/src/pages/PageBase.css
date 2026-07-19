@@ -26,6 +26,11 @@
   font-weight: 700;
   color: var(--gray-800);
 }
+.card-sub {
+  font-size: 12px;
+  color: var(--gray-400);
+  margin-top: 2px;
+}
 
 /* ── Buttons ── */
 .btn {

@@ -511,3 +511,170 @@
 .plan-card .btn-primary {
   background: var(--blue-primary);
 }
+
+/* ─── Metricas económicas ─── */
+.metricas-eco {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+}
+
+.metrica-card {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 18px;
+}
+
+.metrica-icono {
+  width: 42px;
+  height: 42px;
+  border-radius: var(--radius-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.metrica-icono--verde { background: #DCFCE7; color: #16A34A; }
+.metrica-icono--azul  { background: var(--blue-light); color: var(--blue-primary); }
+.metrica-icono--rojo  { background: #FEE2E2; color: var(--red); }
+.metrica-icono--ambar { background: var(--yellow-light); color: #B45309; }
+
+.metrica-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.metrica-label {
+  font-size: 11.5px;
+  color: var(--gray-500);
+  font-weight: 500;
+}
+
+.metrica-valor {
+  font-size: 20px;
+  font-weight: 800;
+  color: var(--gray-900);
+  font-family: var(--font-mono);
+  letter-spacing: -0.5px;
+  line-height: 1.2;
+}
+
+/* ─── AI Insights ─── */
+.insights-lista {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.insight-item {
+  display: flex;
+  gap: 14px;
+  padding: 14px;
+  border-radius: var(--radius-md);
+  border: 1px solid;
+}
+
+.insight-item--rojo {
+  background: #FEF2F2;
+  border-color: #FECACA;
+}
+
+.insight-item--ambar {
+  background: #FFFBEB;
+  border-color: #FDE68A;
+}
+
+.insight-icono {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.insight-item--rojo .insight-icono {
+  background: #FEE2E2;
+  color: var(--red);
+}
+
+.insight-item--ambar .insight-icono {
+  background: var(--yellow-light);
+  color: #B45309;
+}
+
+.insight-cuerpo {
+  flex: 1;
+  min-width: 0;
+}
+
+.insight-titulo {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 4px;
+  font-size: 14px;
+  color: var(--gray-900);
+}
+
+.insight-badge {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 20px;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.3px;
+  text-transform: uppercase;
+}
+
+.insight-item--rojo .insight-badge {
+  background: #FECACA;
+  color: #DC2626;
+}
+
+.insight-item--ambar .insight-badge {
+  background: #FDE68A;
+  color: #B45309;
+}
+
+.insight-detalle {
+  font-size: 12.5px;
+  color: var(--gray-600);
+  margin-bottom: 4px;
+}
+
+.insight-sugerencia {
+  font-size: 12.5px;
+  color: var(--gray-700);
+  margin-bottom: 6px;
+}
+
+.insight-estrategia {
+  display: inline-block;
+  padding: 2px 10px;
+  background: var(--gray-100);
+  color: var(--gray-600);
+  border-radius: 20px;
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.text-muted {
+  color: var(--gray-500);
+  font-size: 13px;
+}
+
+@media (max-width: 900px) {
+  .metricas-eco {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 600px) {
+  .metricas-eco {
+    grid-template-columns: 1fr;
+  }
+}

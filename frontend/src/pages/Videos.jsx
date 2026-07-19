@@ -4,7 +4,7 @@ import { generarVideoTexto, generarVideoDesdeImagen } from '../services/videoSer
 import './PageBase.css'
 import './Videos.css'
 
-const duraciones = ['5 segundos']
+const duraciones = ['6 segundos']
 const plataformas = ['TikTok', 'Instagram Reels', 'YouTube Shorts', 'Facebook']
 const estilos = ['Cinematográfico', 'Minimalista', 'Dinámico', 'Lifestyle']
 
@@ -146,7 +146,7 @@ export default function Videos() {
           <div className="card-title" style={{ marginBottom: 18 }}>Configurar video</div>
 
           <div className="form-group">
-            <label className="form-label">Producto o servicio *</label>
+            <label className="form-label">Prompt para el video *</label>
             <input
               className="form-input"
               placeholder="Ej: Crema hidratante premium"
@@ -245,7 +245,7 @@ export default function Videos() {
 
           <div className="info-box" style={{ marginTop: 14 }}>
             <Lock size={13} />
-            <span>Los videos duran 5 segundos</span>
+            <span>Los videos duran 6 segundos</span>
           </div>
         </div>
 

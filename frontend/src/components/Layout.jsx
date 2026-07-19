@@ -1,18 +1,19 @@
 import React, { useState } from 'react'
 import { Outlet, NavLink, useLocation } from 'react-router-dom'
 import {
-  LayoutDashboard, Sparkles, Video, MessageSquare,
-  Image, CreditCard, Settings, HelpCircle, Bell,
-  Search, ChevronDown, Zap
+  LayoutDashboard, Sparkles, Image, MessageSquare,
+  ShoppingCart, CreditCard, Settings, HelpCircle, Bell,
+  Search, ChevronDown, Zap, Package
 } from 'lucide-react'
 import './Layout.css'
 
 const navItems = [
   { to: '/dashboard', icon: LayoutDashboard, label: 'Dashboard' },
-  { to: '/generador', icon: Sparkles, label: 'Generador de Anuncios' },
-  { to: '/videos', icon: Video, label: 'Videos IA' },
-  { to: '/whatsapp', icon: MessageSquare, label: 'WhatsApp Auto.' },
-  { to: '/historial', icon: Image, label: 'Historial y Galería' },
+  { to: '/inventario', icon: Package, label: 'Inventario' },
+  { to: '/campanas', icon: Sparkles, label: 'Campañas Inteligentes' },
+  { to: '/galeria', icon: Image, label: 'Galería' },
+  { to: '/whatsapp', icon: MessageSquare, label: 'WhatsApp Ventas' },
+  { to: '/historial', icon: ShoppingCart, label: 'Historial Ventas' },
   { to: '/planes', icon: CreditCard, label: 'Planes' },
 ]
 
@@ -21,15 +22,14 @@ export default function Layout() {
 
   return (
     <div className="layout">
-      {/* Sidebar */}
       <aside className="sidebar">
         <div className="sidebar-logo">
           <div className="logo-icon">
             <Zap size={18} color="#fff" />
           </div>
           <div>
-            <div className="logo-name">AdFlow.ai</div>
-            <div className="logo-sub">IA Automatización</div>
+            <div className="logo-name">AdNova.ai</div>
+            <div className="logo-sub">CFO de Bolsillo</div>
           </div>
         </div>
 
@@ -63,15 +63,13 @@ export default function Layout() {
         </div>
       </aside>
 
-      {/* Main area */}
       <div className="main-area">
-        {/* Topbar */}
         <header className="topbar">
           <div className="search-bar">
             <Search size={16} className="search-icon" />
             <input
               type="text"
-              placeholder="Buscar campañas, anuncios o analíticas..."
+              placeholder="Buscar campañas, productos o ventas..."
               value={searchVal}
               onChange={e => setSearchVal(e.target.value)}
             />
@@ -88,14 +86,13 @@ export default function Layout() {
               <div className="user-avatar">AU</div>
               <div className="user-info">
                 <span className="user-name">AdFlow User</span>
-                <span className="user-role">Miembro Premium</span>
+                <span className="user-role">CFO Plan</span>
               </div>
               <ChevronDown size={14} color="var(--gray-400)" />
             </div>
           </div>
         </header>
 
-        {/* Page content */}
         <main className="content">
           <Outlet />
         </main>

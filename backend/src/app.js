@@ -1,58 +1,57 @@
 import express from 'express'
 import cors from 'cors'
-import fs from 'fs'
 import { config } from './config/env.js'
-import videoRoutes from './routes/videoRoutes.js'
+import dashboardRoutes from './routes/dashboardRoutes.js'
+import campaignRoutes from './routes/campaignRoutes.js'
+import salesRoutes from './routes/salesRoutes.js'
+import productRoutes from './routes/productRoutes.js'
+import scanRoutes from './routes/scanRoutes.js'
 import { errorHandler } from './middleware/errorHandler.js'
 
 const app = express()
 
-// ── Crea carpeta temporal para uploads si no existe ───────────────────────
-if (!fs.existsSync('uploads')) {
-  fs.mkdirSync('uploads')
-}
-
-// ── Middlewares globales ──────────────────────────────────────────────────
-
-// CORS: solo permite peticiones desde el frontend
 app.use(cors({
   origin: config.frontendUrl,
-  methods: ['GET', 'POST'],
+  methods: ['GET', 'POST', 'PUT', 'DELETE'],
 }))
 
-// Parseo de JSON (para las rutas que no usan multipart)
 app.use(express.json())
+app.use('/uploads', express.static('uploads'))
 
-// ── Ruta de salud ─────────────────────────────────────────────────────────
-// Útil para comprobar que el servidor está corriendo
+app.get('/', (req, res) => {
+  res.redirect(config.frontendUrl)
+})
+
 app.get('/health', (req, res) => {
   res.json({
     ok: true,
-    mensaje: 'AdFlow backend corriendo',
-    modelos: {
-      texto: config.replicate.modelText,
-      imagen: config.replicate.modelImg,
-    }
+    mensaje: 'AdNova.ai - CFO de Bolsillo corriendo',
+    motor: 'Económico Online',
+    bannerGen: 'SVG dinámico (sin costo)',
   })
 })
 
-// ── Rutas de la API ───────────────────────────────────────────────────────
-app.use('/api/video', videoRoutes)
+app.use('/api/dashboard', dashboardRoutes)
+app.use('/api/campaigns', campaignRoutes)
+app.use('/api/sales', salesRoutes)
+app.use('/api/inventory', scanRoutes)
+app.use('/api/products', productRoutes)
 
-// ── Manejo de rutas no encontradas ────────────────────────────────────────
 app.use((req, res) => {
   res.status(404).json({ error: `Ruta no encontrada: ${req.method} ${req.path}` })
 })
 
-// ── Manejo global de errores (siempre al final) ───────────────────────────
 app.use(errorHandler)
 
-// ── Arranque ──────────────────────────────────────────────────────────────
 app.listen(config.port, () => {
-  console.log(`\n AdFlow backend corriendo en http://localhost:${config.port}`)
-  console.log(`   Health check: http://localhost:${config.port}/health`)
+  console.log(`\n AdNova.ai Backend corriendo en http://localhost:${config.port}`)
   console.log(`   Endpoints:`)
-  console.log(`     POST /api/video/generar`)
-  console.log(`     POST /api/video/generar-desde-imagen`)
-  console.log(`     GET  /api/video/estado/:modelo\n`)
+  console.log(`     GET  /api/dashboard/metrics`)
+  console.log(`     GET  /api/products`)
+  console.log(`     GET  /api/products/:id`)
+  console.log(`     POST /api/inventory/scan-invoice  (multipart, campo: invoice)`)
+  console.log(`     POST /api/campaigns/generate`)
+  console.log(`     POST /api/sales/register`)
+  console.log(`     GET  /api/sales/history`)
+  console.log(`     GET  /health\n`)
 })
